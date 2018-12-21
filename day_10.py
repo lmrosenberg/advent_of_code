@@ -1,5 +1,8 @@
+import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 import argparse
+import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--testing', default=False, type=bool)
@@ -38,51 +41,66 @@ position=<14,  7> velocity=<-2,  0>
 position=<-3,  6> velocity=< 2, -1>"""
 
 
-def processing(input, testing=False):
-    positions = dict()
-    velocity = dict()
+def processing(raw_text, testing=False):
+    positions = []
+    velocity = []
 
     if testing:
-        for point, line in enumerate(input.splitlines()):
-            positions[point] = (int(line[10:12]), int(line[14:16]))
-            velocity[point] = (int(line[28:30]), int(line[31:34]))
+        for line in raw_text.splitlines():
+            positions.append((int(line[10:12]), int(line[14:16])))
+            velocity.append((int(line[28:30]), int(line[31:34])))
 
     else:
-        for point, line in enumerate(input.splitlines()):
-                positions[point] = (int(line[10:16]), int(line[18:24]))
-                velocity[point] = (int(line[36:38]), int(line[39:42]))
+        for line in raw_text.splitlines():
+            positions.append((int(line[10:16]), int(line[18:24])))
+            velocity.append((int(line[36:38]), int(line[39:42])))
+
+    points = np.array([positions, velocity])
+
+    return points, positions, velocity
 
 
-    return positions, velocity
+def move_points(frame_number):
+    print(frame_number, ax.get_xlim()[0], ax.get_xlim()[1])
 
-
-def graph_it(current_postions):
-    xs = [i[0] for i in current_postions.values()]
-    ys = [i[1] for i in current_postions.values()]
-
-    plt.scatter(x=xs, y=ys, c='black', marker='o')
-    plt.show()
-
-
-def move_points(current_positions, velocity):
-    for point in current_positions.keys():
-        current_positions[point] = (current_positions[point][0] + velocity[point][0],
-                                    current_positions[point][1] + velocity[point][1])
-    return current_positions
-
-
-def main():
-    if args.testing:
-        input = sample
+    if frame_number < 100:
+        points[0] = points[0] + 100*points[1]
+    elif frame_number < 176:
+        points[0] = points[0] + 5*points[1]
+    #elif frame_number < 150:
+    #    points[0] = points[0] + points[1]
     else:
-        with open('inputs/day_10.txt') as file:
-            input = file.read()
+        if ax.get_xlim()[0] < 172.447870968:
+            points[0] = points[0] + points[1]
+        else:
+            print(points[0][22], refpoint)
+            exit()
+    ax.clear()
+    scat = ax.scatter(x=[x[0] for x in points[0]],
+                      y=[x[1] for x in points[0]], c='black', marker='o',
+                      label=frame_number)
+    print("I'm doing something")
 
-    positions, velocity = processing(input)
-    while 1 == 1:
-        graph_it(positions)
-        positions = move_points(positions, velocity)
 
+if args.testing:
+    in_text = sample
+else:
+    with open('inputs/day_10.txt') as file:
+        in_text = file.read()
 
-if __name__ == "__main__":
-    main()
+points, positions, velocity = processing(in_text, args.testing)
+
+refpoint = (points[0][22], points[1][22])
+
+if args.testing:
+    fig, ax = plt.subplots(figsize=(5, 3))
+
+else:
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+counter = 1
+scat = ax.scatter(x=[x[0] for x in points[0]], y=[x[1] for x in points[0]],
+                  c='black', marker='o')
+anim = FuncAnimation(fig, move_points, interval=10)
+
+plt.show()
