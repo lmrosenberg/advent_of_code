@@ -49,8 +49,8 @@ def processing(input, testing=False):
 
     else:
         for point, line in enumerate(input.splitlines()):
-            positions[point] = (int(line[10:17]), int(line[14:16]))
-            velocity[point] = (int(line[28:30]), int(line[31:34]))
+                positions[point] = (int(line[10:16]), int(line[18:24]))
+                velocity[point] = (int(line[36:38]), int(line[39:42]))
 
 
     return positions, velocity
