@@ -1,41 +1,24 @@
-initial_state = """.##..#.#..##..##..##...#####.#.....#..#..##.###.#.####......#.......#..###.#.#.##.#.#.###...##.###.#"""
+initial_state = "#..#.#..##......###...###"
 
-rules = """.##.# => #
-##.#. => #
-##... => #
-#.... => .
-.#..# => .
-#.##. => .
-.##.. => .
-.#.## => .
-###.. => .
-..##. => #
-##### => #
-#...# => #
-.#... => #
-###.# => #
-#.### => #
-##..# => .
-.###. => #
-...## => .
-..#.# => .
-##.## => #
-....# => .
-#.#.# => #
-#.#.. => .
-.#### => .
-...#. => #
-..### => .
+rules = """...## => #
 ..#.. => #
-..... => .
-####. => .
-#..## => #
-.#.#. => .
-#..#. => #"""
+.#... => #
+.#.#. => #
+.#.## => #
+.##.. => #
+.#### => #
+#.#.# => #
+#.### => #
+##.#. => #
+##.## => #
+###.. => #
+###.# => #
+####. => #"""
 
 
 def process_string(string):
     processed = [i for i in string]
+
     return processed
 
 
@@ -60,11 +43,10 @@ numbered_pots = zip(pots, pot_numbers)
 gen_total = sum(i[1] for i in numbered_pots if i[0] == '#')
 
 next_gen = ''
-#total_plants = len([i for i in pots if i == '#'])
+total_plants = len([i for i in pots if i == '#'])
 
 for iteration in range(21):
-    print(iteration, [i for i in numbered_pots if i[1] == 0], gen_total)
-    print(pots)
+    print(iteration,[i for i in numbered_pots if i[1] == 0], gen_total)
     #print(iteration, len([i for i in pots if i == '#']), pots)
     for index, pot in enumerate(pots):
         if index == 0:
@@ -88,8 +70,12 @@ for iteration in range(21):
 
     pots = '..' + next_gen + '..'
     for i in range(2):
-        pot_numbers.insert(0, min(pot_numbers) - 1)
+        pot_numbers.insert(0, min(pot_numbers) -1)
     for i in range(2):
         pot_numbers.append(max(pot_numbers) + 1)
     next_gen = ''
-    #total_plants += len([i for i in pots if i == '#'])
+    total_plants += len([i for i in pots if i == '#'])
+
+#print(20, len([i for i in pots if i == '#']), pots)
+#print(total_plants + len([i for i in pots if i == '#']))
+#print(gen_total)
